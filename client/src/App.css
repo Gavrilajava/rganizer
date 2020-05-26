@@ -36,3 +36,113 @@
     transform: rotate(360deg);
   }
 }
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #111;
+}
+
+.card {
+  width: 300px;
+  border: 1px solid black;
+  border-radius: 8px;
+  margin: 5px;
+  box-shadow: 3px 3px 6px black;
+  padding: 5px;
+}
+
+.header {
+  font-weight: 800;
+}
+
+.meta {
+  color: blue;
+  font-weight: 600;
+}
+
+.description {
+  color: grey;
+}
+
+.details {
+  margin: 5px;
+  box-shadow: 3px 3px 6px black;
+  border: 1px solid black;
+  border-radius: 8px;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 80%;
+  padding: 5px;
+}
+
+.details a {
+  font-weight: 800;
+  font-size: 24px;
+  margin: 25px;
+}
+
+.details p {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+button {
+  padding: 5px;
+  margin: 15px;
+  box-shadow: 3px 3px 6px black;
+  border: 1px solid black;
+  border-radius: 8px;
+}
+
+.apply {
+  background-color: darkolivegreen;
+}
+
+.unrelevant {
+  background-color: dimgray
+}
+
+.unrelevant {
+  background-color: lightslategray
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  background-color: mediumseagreen;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}

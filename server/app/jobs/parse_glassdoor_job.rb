@@ -10,7 +10,7 @@ class ParseGlassdoorJob < ApplicationJob
     doc = Nokogiri::HTML.parse(page)
     doc.css("div.jobContainer").each{|jobContainer|
       params = {}
-      params[:title] = (jobContainer.children.css("a").text).strip
+      params[:title] = (jobContainer.children.css("a")[1].text).strip
       params[:link] = "https://www.glassdoor.com#{jobContainer.children.css("a")[0]['href']}"
       loc = jobContainer.children.css("span.subtle")[0].text
       loc = loc.split(", ")
