@@ -12,7 +12,7 @@ class Posting < ApplicationRecord
 
 
   def self.get_glassdoor(keywords, location)
-    #  1347
+    #  Texas is 1347
       keywords = keywords.split(" ").join("+")
       url = "https://www.glassdoor.com/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=#{keywords}&locT=S&locId=#{location}&jobType=&context=Jobs&sc.keyword=#{keywords}&dropdown=0"
       ParseGlassdoorJob.perform_later(url)
