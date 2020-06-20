@@ -10,7 +10,11 @@ class PostingsController < ApplicationController
 
   def update
     posting = Posting.find(params[:id])
-    posting.update(strong_params)
+    if params["category"] == "applied"
+      Posting.unprocessed.where(company: posting.company).update_all(category: "applied")
+    else
+      posting.update(strong_params)
+    end
     render json: posting
   end
 
