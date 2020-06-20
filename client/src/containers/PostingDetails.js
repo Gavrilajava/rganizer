@@ -16,6 +16,21 @@ const PostingDetails = (props) => {
       })
   }
 
+  const stopwords = ["clearance", "Clearance", "US Citizen", "PHP"]
+
+  const checkForStopwords = (text) =>{
+    if (text){
+      stopwords.forEach(word => {
+        text = text.split(word).join(`<p class = red>${word}<p>`)
+      })
+
+      return <div dangerouslySetInnerHTML={{ __html: text}} />
+    }
+    else {
+      return null
+    }
+  }
+
   if (!posting){
     return null
   }
@@ -29,7 +44,7 @@ const PostingDetails = (props) => {
           </div>
           <a href = {posting.link} target="_blank" rel="noopener noreferrer"  >{posting.title}</a>
           <p>
-            {posting ? posting.description : null}
+            {posting ? checkForStopwords(posting.description) : null}
           </p>
         </div>
     )

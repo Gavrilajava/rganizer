@@ -146,3 +146,8 @@ td, th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+.red {
+  color: red;
+  font-weight: 800;
+}
