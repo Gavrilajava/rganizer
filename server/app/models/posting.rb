@@ -4,7 +4,7 @@ class Posting < ApplicationRecord
 
   scope :unprocessed, -> {where(category: "new")}
 
-  scope :applied, -> {where(category: "applied")}
+  scope :applied, -> {where(category: "applied").order(:updated_at)}
 
   def self.latest_twenty
     last(20)
@@ -12,10 +12,14 @@ class Posting < ApplicationRecord
 
   def self.get_all_glassdoor
     locations = [1347, 1282, 2792, 847, 3107, 105, 1968, 3426, 1553, 386, 39, 3318, 323, 3411, 428, 3020, 527, 302, 3523, 3201, 3185, 3399, 2697]
-    keywords = "Entry Level Developer"
+    keywords = ["Entry Level Developer"]
     locations.each{ |location|
-      sleep(10)
-      Posting.get_glassdoor(keywords, location)
+      
+      keywords.each { |keyword|
+        sleep(3)
+        Posting.get_glassdoor(keyword, location)
+      }
+      
     }
   end
 
@@ -52,8 +56,9 @@ class Posting < ApplicationRecord
       # url = "https://www.glassdoor.com/Job/houston-ruby-on-rails-jobs-SRCH_IL.0,7_IC1140171_KE8,21.htm?radius=100"
       # url = "https://www.glassdoor.com/Job/houston-developer-junior-jobs-SRCH_IL.0,7_IC1140171_KO8,17_KE18,24.htm?radius=100"
       # url = "https://www.glassdoor.com/Job/houston-javascript-developer-jobs-SRCH_IL.0,7_IC1140171_KO8,28.htm?radius=100" Хреновая
-      url = "https://www.glassdoor.com/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=#{keywords}&locT=S&locId=#{location}&jobType=&context=Jobs&sc.keyword=#{keywords}&dropdown=0&radius=100"
+      url = "https://www.glassdoor.com/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=#{keywords}&locT=S&locId=#{location}&jobType=&context=Jobs&sc.keyword=#{keywords}&dropdown=0&radius=100&seniorityType=entrylevel"
       ParseGlassdoorJob.perform_later(url)
   end
 
 end
+

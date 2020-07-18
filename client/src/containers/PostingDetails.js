@@ -16,7 +16,7 @@ const PostingDetails = (props) => {
       })
   }
 
-  const stopwords = ["clearance", "Clearance", "US Citizen", "PHP"]
+  const stopwords = ["clearance", "Clearance", "US Citizen", "PHP", "Senior"]
 
   const checkForStopwords = (text) =>{
     if (text){
