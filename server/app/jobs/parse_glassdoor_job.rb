@@ -30,8 +30,12 @@ class ParseGlassdoorJob < ApplicationJob
       end
 
     }
+
     if doc.css("li.next")[0]
       nextPage = "https://www.glassdoor.com#{doc.css("li.next").children.css("a")[0]['href']}"
+      puts ""
+      puts nextPage
+      puts ""
       if nextPage != url
         ParseGlassdoorJob.perform_later(nextPage)
       end
