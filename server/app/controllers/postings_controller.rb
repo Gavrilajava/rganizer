@@ -18,9 +18,17 @@ class PostingsController < ApplicationController
     render json: posting
   end
 
-  def filter
-
+  def search
+    Posting.get_all_glassdoor
+    render json: {status: "success"}
   end
+
+  def delete
+    Posting.unprocessed.delete_all
+    render json: {status: "success"}
+  end
+
+
 
   private
 

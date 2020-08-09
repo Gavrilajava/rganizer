@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   get '/applied_postings', to: "postings#applied"
   patch '/posting/:id', to: "postings#update"
 
+  post '/search', to: "postings#search"
+  delete '/postings', to: "postings#delete"
+
   get '/keywords', to: "keywords#index"
   post '/keywords', to: "keywords#create"
   patch '/keywords/:id', to: "keywords#update"
@@ -14,5 +17,7 @@ Rails.application.routes.draw do
   post '/locations', to: "locations#create"
   patch '/locations/:id', to: "locations#update"
   delete '/locations/:id', to: "locations#destroy"
+
+
 
 end
