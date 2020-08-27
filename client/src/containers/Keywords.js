@@ -53,11 +53,12 @@ const Keywords = () => {
   }
 
   const filterKeywords = () => {
+    const sortedKeywords = keywords.sort((a,b) => a.id - b.id)
     if (!filter){
-      return keywords
+      return sortedKeywords
     }
     else{
-      return keywords.filter(keyword => keyword.name.toLowerCase().includes(filter.toLowerCase()))
+      return sortedKeywords.filter(keyword => keyword.name.toLowerCase().includes(filter.toLowerCase()))
     }
   }
 

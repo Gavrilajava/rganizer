@@ -2,45 +2,48 @@ class ParseGlassdoorJob < ApplicationJob
   queue_as :default
 
   def perform(url)
+    # puts "parsing " + url
     page = RestClient::Request.execute(
       method: :get, 
       url: url,
       timeout: 50, 
       headers: {"User-Agent" => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"})
-    doc = Nokogiri::HTML.parse(page)
-    doc.css("div.jobContainer").each{|jobContainer|
-      params = {}
-      params[:title] = (jobContainer.children.css("a")[1].text).strip
-      if jobContainer.children.css("a")[0]['href'].first(4) == "http"
-        params[:link] = jobContainer.children.css("a")[0]['href']
-      else
-        params[:link] = "https://www.glassdoor.com#{jobContainer.children.css("a")[0]['href']}"
-      end
-      loc = jobContainer.children.css("span.subtle")[0].text
-      loc = loc.split(", ")
-      params[:city] = (loc[0]).strip
-      params[:state] = loc[1]
-      params[:company] = (jobContainer.children.css("div.jobHeader").children.css("a").text).strip
-      if jobContainer.children.css("span.gray")[0]
-        params[:salary] = jobContainer.children.css("span.gray")
-      end
-      posting = Posting.create(params)
-      if posting.valid?
-        ParseGlassdoorPostingJob.perform_later(posting)
-      end
+    doc = JSON.parse(page)
+    if doc["success"]
+      doc["response"]["jobListings"].each{|listing|
+        params = {}
+        params[:title] = listing["jobTitle"]
+        params[:link] = "https://www.glassdoor.com#{listing["jobViewUrl"]}"
+        loc = listing["location"]
+        loc = loc.split(", ")
+        if loc[1]
+          params[:city] = (loc[0]).strip
+          params[:state] = loc[1]
+        else
 
-    }
+        end
+        params[:company] = listing["employer"]["name"]
+        if listing["salaryEstimate"]
+          params[:salary] = listing["salaryEstimate"]["salary_percentile_50"]
+        end
+        posting = Posting.create(params)
+        if posting.valid?
+          ParseGlassdoorPostingJob.perform_later(posting)
+        end
 
-    if doc.css("li.next")[0]
-      nextPage = "https://www.glassdoor.com#{doc.css("li.next").children.css("a")[0]['href']}"
-      puts ""
-      puts nextPage
-      puts ""
-      if nextPage != url
+      }
+
+      if doc["response"]["currentPageNumber"] < doc["response"]["totalNumberOfPages"]
+        if url.include?("&p=")
+          nextPage = url.sub!("&p=#{doc["response"]["currentPageNumber"]}","&p=#{doc["response"]["currentPageNumber"]+1}")
+        else
+          nextPage = url + "&p=2"
+        end
         ParseGlassdoorJob.perform_later(nextPage)
       end
+    else
+      puts "Request denied by glassdoor"
     end
-
   end
 
   # t.string :company 

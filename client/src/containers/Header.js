@@ -10,6 +10,7 @@ const Header = () => {
       <li><a href="/applied">Applied</a></li>
       <li><a href="/locations">Locations</a></li>
       <li><a href="/keywords">Keywords</a></li>
+      <li><a href="/stats">Stats</a></li>
       <Delete/>
       <Search/>
     </ul>

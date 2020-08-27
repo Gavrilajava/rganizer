@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   get '/postings', to: "postings#index"
   get '/applied_postings', to: "postings#applied"
+  get '/stats', to: "postings#stats"
   patch '/posting/:id', to: "postings#update"
+
 
   post '/search', to: "postings#search"
   delete '/postings', to: "postings#delete"

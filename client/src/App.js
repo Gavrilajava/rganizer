@@ -6,6 +6,7 @@ import PostingsContainer from './containers/PostingsContainer'
 import Applied from './containers/Applied'
 import Locations from './containers/Locations'
 import Keywords from './containers/Keywords'
+import Stats from './containers/Stats'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route exact path="/applied" render={(routerProps) => <Applied {...routerProps} /> }/>
         <Route exact path="/locations" render={(routerProps) => <Locations {...routerProps} /> }/>
         <Route exact path="/keywords" render={(routerProps) => <Keywords {...routerProps} /> }/>
+        <Route exact path="/stats" render={(routerProps) => <Stats {...routerProps} /> }/>
       </Switch>
   </BrowserRouter>
   );

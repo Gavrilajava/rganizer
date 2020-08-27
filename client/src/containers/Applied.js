@@ -19,6 +19,7 @@ const Applied = () => {
       <tr>
         <td>{posting.company}</td>
         <td>{posting.title}</td>
+        <td>{posting.city +" "+posting.state}</td>
         <td>{posting.updated_at}</td>
       </tr>
     )
@@ -41,6 +42,7 @@ const Applied = () => {
       <tr>
         <th>Company</th>
         <th>Position</th>
+        <th>City</th>
         <th>Date Applied</th>
       </tr>
       {filterPostings().map(posting => renderRow(posting))}

@@ -1,7 +1,7 @@
 class PostingsController < ApplicationController
 
   def index
-    render json: Posting.unprocessed.last(20)
+    render json: Posting.unprocessed.first(20)
   end
 
   def applied
@@ -26,6 +26,10 @@ class PostingsController < ApplicationController
   def delete
     Posting.unprocessed.delete_all
     render json: {status: "success"}
+  end
+
+  def stats
+    render json: Posting.stats
   end
 
 
