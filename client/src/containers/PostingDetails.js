@@ -1,5 +1,5 @@
 import React from 'react'
-import Iframe from 'react-iframe'
+import '../Posting.css'
 
 const PostingDetails = (props) => {
   const {posting, setActivePosting, handleModifyPosting} = props
@@ -17,12 +17,12 @@ const PostingDetails = (props) => {
       })
   }
 
-  const stopwords = ["clearance", "Clearance", "US Citizen", "PHP", "Senior"]
+  const stopwords = ["clearance", "Clearance", "US Citizen", "PHP", "Senior", "TS/SCI"]
 
   const checkForStopwords = (text) =>{
     if (text){
       stopwords.forEach(word => {
-        text = text.split(word).join(`<p class = red>${word}<p>`)
+        text = text.split(word).join(`<em class = red>${word}</em>`)
       })
 
       return <div dangerouslySetInnerHTML={{ __html: text}} />
@@ -44,9 +44,13 @@ const PostingDetails = (props) => {
             <button className = "expired" onClick = {() => handleClick("expired")}> Expired </button>
           </div>
           <a href = {posting.link} target="_blank" rel="noopener noreferrer"  >{posting.title}</a>
-          <p>
+          <p>{posting.keywords}</p>
+          <div>
             {posting ? checkForStopwords(posting.description) : null}
-          </p>
+          </div>
+          {/* <iframe src = {posting.link}>
+
+          </iframe> */}
         </div>
     )
   }

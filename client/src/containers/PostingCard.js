@@ -10,7 +10,7 @@ const PostingCard = (props) => {
           <div className="header">
             {posting.title}
           </div>
-          <div className="meta">
+          <div className={posting.applied ? "meta red" : "meta"}>
             {posting.company}
           </div>
           <div className="description">

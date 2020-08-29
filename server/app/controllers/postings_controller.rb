@@ -1,7 +1,8 @@
 class PostingsController < ApplicationController
 
   def index
-    render json: Posting.unprocessed.first(20)
+    # render json: Posting.unprocessed.first(20)
+    render json: Posting.next_unprocessed
   end
 
   def applied

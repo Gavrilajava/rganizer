@@ -1,7 +1,7 @@
 class ParseGlassdoorJob < ApplicationJob
   queue_as :default
 
-  def perform(url)
+  def perform(url, keywords)
     # puts "parsing " + url
     page = RestClient::Request.execute(
       method: :get, 
@@ -13,7 +13,14 @@ class ParseGlassdoorJob < ApplicationJob
       doc["response"]["jobListings"].each{|listing|
         params = {}
         params[:title] = listing["jobTitle"]
-        params[:link] = "https://www.glassdoor.com#{listing["jobViewUrl"]}"
+
+        link = listing["jobViewUrl"]
+        # dom  = "https://www.glassdoor.com/partner/jobListing.htm?" #ao=465888&jobListingId=3651420494"
+        # rawurl = link.split("&")
+        # ao = rawurl.find{|part| part.include?("ao=")}
+        # jobListingId = rawurl.find{|part| part.include?("jobListingId=")}
+        # url = dom + ao + '&' + jobListingId
+        params[:link] = "https://www.glassdoor.com" + link
         loc = listing["location"]
         loc = loc.split(", ")
         if loc[1]
@@ -22,6 +29,7 @@ class ParseGlassdoorJob < ApplicationJob
         else
 
         end
+        params[:used_keywords] = keywords
         params[:company] = listing["employer"]["name"]
         if listing["salaryEstimate"]
           params[:salary] = listing["salaryEstimate"]["salary_percentile_50"]
@@ -39,7 +47,7 @@ class ParseGlassdoorJob < ApplicationJob
         else
           nextPage = url + "&p=2"
         end
-        ParseGlassdoorJob.perform_later(nextPage)
+        ParseGlassdoorJob.perform_later(nextPage, keywords)
       end
     else
       puts "Request denied by glassdoor"
