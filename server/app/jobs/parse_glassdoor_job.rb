@@ -1,7 +1,10 @@
 class ParseGlassdoorJob < ApplicationJob
   queue_as :default
 
-  def perform(url, keywords)
+  @@all = 0
+
+  def perform(url, keywords, pause)
+    sleep(pause)
     # puts "parsing " + url
     page = RestClient::Request.execute(
       method: :get, 
@@ -60,11 +63,16 @@ class ParseGlassdoorJob < ApplicationJob
   # t.text :description
 
   # t.string :salary
+  def self.all
+    @@all
+  end
 
   private
   def around_parse
     # Do something before perform
+    @@all += 1
     yield
     # Do something after perform
+    @@all -= 1
   end
 end

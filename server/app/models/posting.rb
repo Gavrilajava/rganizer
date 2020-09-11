@@ -34,16 +34,18 @@ class Posting < ApplicationRecord
   def self.get_all_glassdoor
     locations = Location.active.pluck(:locId)
     keywords = Keyword.active
-    locations.each{ |location|
-      keywords.each { |keyword|
-        sleep(rand(3.0..5.0))
-        Posting.get_glassdoor(keyword.title, location, keyword.isEntryLevel)
+    locations.each_with_index { |location, loc_index |
+      keywords.each_with_index { |keyword, key_index|
+        pause = rand(3.0..5.0)
+        pause *= ((loc_index+1)+(key_index+1)*2)
+        # sleep(pause)
+        Posting.get_glassdoor(keyword.title, location, keyword.isEntryLevel, pause)
       }
     }
   end
 
 
-  def self.get_glassdoor(keywords, location, entryLevel = false)
+  def self.get_glassdoor(keywords, location, entryLevel = false, pause)
       keywords = keywords.split(" ").join("+")
       if entryLevel
         entryLevel = '&seniorityType=entrylevel'
@@ -52,7 +54,7 @@ class Posting < ApplicationRecord
       end
       url = "https://api.glassdoor.com/api/api.htm?v=1&format=json&t.p=120&t.k=fz6JLNDfgVs&action=jobs&q=#{keywords}&locT=S&locId=#{location}#{entryLevel}"
       # url = "https://www.glassdoor.com/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=#{keywords}&locT=S&locId=#{location}&jobType=&context=Jobs&sc.keyword=#{keywords}&dropdown=0&radius=100#{entryLevel}"
-      ParseGlassdoorJob.perform_later(url, keywords)
+      ParseGlassdoorJob.perform_later(url, keywords, pause)
       # Posting.perform(url)
   end
 
@@ -84,9 +86,13 @@ class Posting < ApplicationRecord
 
   def self.perform_all
     Posting.unprocessed.each{|posting|
-      Posting.perform(posting)
+      if !posting.description
+        ParseGlassdoorPostingJob.perform_later(posting)
+      end
     }
   end
+
+
 
 
 end
