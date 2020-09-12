@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_27_201825) do
+ActiveRecord::Schema.define(version: 2020_09_11_195715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,15 @@ ActiveRecord::Schema.define(version: 2020_08_27_201825) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "used_keywords"
+  end
+
+  create_table "scheduled_postings", force: :cascade do |t|
+    t.string "url"
+    t.string "keywords"
+    t.string "posting_id"
+    t.string "status", default: "new"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end

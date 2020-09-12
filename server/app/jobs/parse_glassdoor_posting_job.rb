@@ -1,7 +1,7 @@
 class ParseGlassdoorPostingJob < ApplicationJob
   queue_as :default
 
-  def perform(posting)
+  def perform(posting, scheduled)
     begin
       dom  = "https://www.glassdoor.com/partner/jobListing.htm?" #ao=465888&jobListingId=3651420494"
       rawurl = posting.link.split("&")
@@ -21,7 +21,9 @@ class ParseGlassdoorPostingJob < ApplicationJob
       else
         desc = doc.css("body")[0].inner_html
       end
+      scheduled.update(status: "done")
     rescue
+      scheduled.update(status: "error")
       nil
     end
   end

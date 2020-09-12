@@ -7,7 +7,10 @@ class Posting < ApplicationRecord
   scope :applied, -> {where(category: "applied").order(updated_at: :desc)}
 
   def self.stats
-    Posting.all.group(:category).count.merge({companies: Posting.where(category: "applied").group(:company).count.length})
+    {
+      postings: Posting.all.group(:category).count.merge({companies: Posting.where(category: "applied").group(:company).count.length}),
+      parsing: ScheduledPosting.stats
+    }
   end
 
   def self.next_unprocessed
@@ -42,6 +45,7 @@ class Posting < ApplicationRecord
         Posting.get_glassdoor(keyword.title, location, keyword.isEntryLevel, pause)
       }
     }
+    ParseFactoryJob.perform_later
   end
 
 
@@ -54,7 +58,8 @@ class Posting < ApplicationRecord
       end
       url = "https://api.glassdoor.com/api/api.htm?v=1&format=json&t.p=120&t.k=fz6JLNDfgVs&action=jobs&q=#{keywords}&locT=S&locId=#{location}#{entryLevel}"
       # url = "https://www.glassdoor.com/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=#{keywords}&locT=S&locId=#{location}&jobType=&context=Jobs&sc.keyword=#{keywords}&dropdown=0&radius=100#{entryLevel}"
-      ParseGlassdoorJob.perform_later(url, keywords, pause)
+      ScheduledPosting.create(url: url, keywords: keywords)
+      # ParseGlassdoorJob.perform_later(url, keywords, pause)
       # Posting.perform(url)
   end
 
@@ -87,10 +92,36 @@ class Posting < ApplicationRecord
   def self.perform_all
     Posting.unprocessed.each{|posting|
       if !posting.description
-        ParseGlassdoorPostingJob.perform_later(posting)
+        ScheduledPosting.create(posting_id: posting.id)
       end
     }
   end
+
+
+  # def self.perform(*args)
+  #   while ScheduledPosting.stats["new"] do
+  #     pool = ScheduledPosting.stats["parsing"]
+  #     pool ? pool : pool = 0
+  #     if pool < 10
+  #       jobs = ScheduledPosting.next(10 - pool)
+  #       jobs.each{ |job|
+  #         job.update(status: "parsing")
+  #         if job.url
+  #           ParseGlassdoorJob.perform_later(job.url, job.url, job)
+  #         else
+  #           ParseGlassdoorPostingJob.perform_later(Posting.find(job.posting_id), job)
+  #         end
+  #       }
+  #     end
+  #     puts
+  #     puts
+  #     puts "#{pool} JOBZ IN PROGRESS"
+  #     puts
+  #     puts
+
+  #     sleep(3)
+  #   end
+  # end
 
 
 
